@@ -1,6 +1,42 @@
 #include "service.h"
 
 
+void ShellSort(int* mass, int n)
+{
+    int i, j, step;
+    int tmp;
+    for (step = n / 2; step > 0; step /= 2)
+        for (i = step; i < n; i++)
+        {
+            tmp = mass[i];
+            for (j = i; j >= step; j -= step)
+            {
+                if (tmp < mass[j - step])
+                    mass[j] = mass[j - step];
+                else
+                    break;
+            }
+            mass[j] = tmp;
+        }
+}
+
+void GnomeSort(int* arr, int n)
+{
+    int index = 0;
+
+    while (index < n) {
+        if (index == 0)
+            index++;
+        if (arr[index] >= arr[index - 1])
+            index++;
+        else {
+            std::swap(arr[index], arr[index - 1]);
+            index--;
+        }
+    }
+    return;
+}
+
 void fillArray(row* user_array, int array_size) {
     srand(time(0));
 
@@ -74,7 +110,7 @@ void mainPart(int mode) {
 
     row* rows = new row[ARRAY_SIZE];
 
-    bool isCreated = false;
+    fillArray(rows, ARRAY_SIZE);
 
     int step = ARRAY_SIZE / 2;
     int j = 0;
@@ -93,12 +129,6 @@ void mainPart(int mode) {
         // Условие выхода
         exit(window, event);
 
-        // Заполнение массива
-        if (!isCreated) {
-            fillArray(rows, ARRAY_SIZE);
-            isCreated = true;
-        }
-
         // Шаг сортировки
         switch (mode) {
         case 1:
@@ -112,6 +142,7 @@ void mainPart(int mode) {
         // Отрисовка
         toDraw(window, rectangle, rows, i, j);
     }
+
     delete[] rows;
     rows = nullptr;
 }

@@ -22,6 +22,11 @@ private slots:
 
     void on_GnomSortButton_clicked();
 
+    void on_optionOpen_triggered();
+
+
+    void on_CompareButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

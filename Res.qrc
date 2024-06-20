@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/reso">
+        <file>img/open_file.png</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file>sort.ico</file>
+    </qresource>
+</RCC>

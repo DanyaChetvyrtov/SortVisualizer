@@ -19,6 +19,8 @@ struct row {
 };
 
 
+void ShellSort(int*, int);
+void GnomeSort(int*, int);
 void fillArray(row*, int);
 void shellSortStep(row*, int&, int&, int&);
 void gnomSortStep(row*, int&);
