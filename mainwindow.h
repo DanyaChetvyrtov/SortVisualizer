@@ -3,6 +3,16 @@
 
 #include <QMainWindow>
 
+#include <QFileDialog>
+#include <QFile>
+#include <QDir>
+#include <QDebug>
+#include <QString>
+#include <QTextStream>
+
+
+
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -26,6 +36,8 @@ private slots:
 
 
     void on_CompareButton_clicked();
+
+    void on_optionClose_triggered();
 
 private:
     Ui::MainWindow *ui;

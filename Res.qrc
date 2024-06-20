@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/reso">
         <file>img/open_file.png</file>
+        <file>img/close_file.png</file>
     </qresource>
     <qresource prefix="/icons">
         <file>sort.ico</file>

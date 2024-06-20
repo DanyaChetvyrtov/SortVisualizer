@@ -1,13 +1,12 @@
+#include "build/Desktop_Qt_6_7_1_MinGW_64_bit-Release/ui_mainwindow.h"
 #include "mainwindow.h"
 #include "service.h"
 #include "ui_mainwindow.h"
 
 
-#include <QFileDialog>
-
-#include <chrono>
-#include <algorithm>
-#include <string.h>
+QFile activeFile;
+int *activeRange;
+bool fileIsActive = false;
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -36,8 +35,34 @@ void MainWindow::on_GnomSortButton_clicked()
 
 void MainWindow::on_optionOpen_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "C:\\Users\\123\\OneDrive\\Рабочий стол\\C++\\summer_practice\\TestAppSFML\\userFiles", "Text files (*.txt)");
 
+    if (fileIsActive){
+        ui->feedbackData->append("Невозможно открыть новый файл, пока не закрыт текущий.\n");
+        return;
+    }
+    else{
+
+        QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "C:\\Users\\123\\OneDrive\\Рабочий стол\\C++\\summer_practice\\TestAppSFML\\userFiles", "Text files (*.txt)");
+
+        activeFile.setFileName(fileName);
+
+        if(activeFile.open(QIODevice::ReadOnly)){
+            QTextStream stream(&activeFile);
+            QString fileData;
+            while(stream.atEnd() == false){
+                fileData += stream.readLine() + " ";
+            }
+
+            ui->fileTitle->setText("Файл: " + fileName.split( "/" ).value( fileName.split( "/" ).length() - 1 ));
+            ui->fileData->setText(fileData);
+            ui->feedbackData->append("Файл был успешно открыт\n");
+
+            int amountOfNums = countIntegers(fileData.toStdString());
+            activeRange = extractNumbers(fileData.toStdString(), amountOfNums);
+
+        }
+        fileIsActive = true;
+    }
 }
 
 
@@ -75,5 +100,24 @@ void MainWindow::on_CompareButton_clicked()
     ui->timeOfShell->setText(QString::fromStdString(std::to_string(elapsed.count())));
     ui->timeOfGnom->setText(QString::fromStdString(std::to_string(elapsed2.count())));
 
+}
+
+
+void MainWindow::on_optionClose_triggered()
+{
+    if(fileIsActive){
+
+        activeFile.close();
+        activeFile.setFileName("");
+
+        ui->fileTitle->setText("");
+        ui->fileData->setText("");
+        ui->feedbackData->append("Файл был успешно закрыт\n");
+
+
+        fileIsActive = false;
+    }else{
+        ui->feedbackData->append("В настоящий момент нет подключённого файла\n");
+    }
 }
 

@@ -75,7 +75,6 @@ void gnomSortStep(row* rows, int& i) {
     }
 }
 
-
 void exit(RenderWindow& window, Event& event) {
     while (window.pollEvent(event)) {
         if (event.type == Event::Closed)
@@ -99,8 +98,6 @@ void toDraw(RenderWindow& window, RectangleShape& rectangle, row* rows, int i, i
 
     window.display();
 }
-
-
 
 void mainPart(int mode) {
 
@@ -145,4 +142,52 @@ void mainPart(int mode) {
 
     delete[] rows;
     rows = nullptr;
+}
+
+int countIntegers(const std::string &input) {
+    std::stringstream ss(input);
+    std::string temp;
+    int count = 0;
+
+    while (ss >> temp) {
+        char* end;
+        std::strtol(temp.c_str(), &end, 10);
+        if (*end == '\0') {
+            ++count;
+        }
+    }
+
+    return count;
+}
+
+int* extractNumbers(const std::string &input, int &count) {
+    std::stringstream ss(input);
+    std::string temp;
+    int number;
+    count = 0;
+
+    // Сначала подсчитаем количество чисел
+    std::stringstream ssCount(input);
+    while (ssCount >> temp) {
+        char* end;
+        std::strtol(temp.c_str(), &end, 10);
+        if (*end == '\0') {
+            ++count;
+        }
+    }
+
+    // Выделим память под массив чисел
+    int* numbers = new int[count];
+    int index = 0;
+
+    // Извлекаем числа и заполняем массив
+    while (ss >> temp) {
+        char* end;
+        number = std::strtol(temp.c_str(), &end, 10);
+        if (*end == '\0') {
+            numbers[index++] = number;
+        }
+    }
+
+    return numbers;
 }
