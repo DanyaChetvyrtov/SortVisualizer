@@ -6,6 +6,7 @@
 
 QFile activeFile;
 int *activeRange;
+int amountOfNums;
 bool fileIsActive = false;
 
 
@@ -21,18 +22,19 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+// Визуализация Шелла
 void MainWindow::on_ShellSortButton_clicked()
 {
-   mainPart(1);
+   mainPart(1, activeRange, amountOfNums);
 }
 
-
+// Визуализация Гнома
 void MainWindow::on_GnomSortButton_clicked()
 {
-    mainPart(2);
+    mainPart(2, activeRange, amountOfNums);
 }
 
-
+// Открыть файл
 void MainWindow::on_optionOpen_triggered()
 {
 
@@ -57,7 +59,7 @@ void MainWindow::on_optionOpen_triggered()
             ui->fileData->setText(fileData);
             ui->feedbackData->append("Файл был успешно открыт\n");
 
-            int amountOfNums = countIntegers(fileData.toStdString());
+            amountOfNums = countIntegers(fileData.toStdString());
             activeRange = extractNumbers(fileData.toStdString(), amountOfNums);
 
         }
@@ -65,44 +67,51 @@ void MainWindow::on_optionOpen_triggered()
     }
 }
 
-
+// Сортировать/сравнить время
 void MainWindow::on_CompareButton_clicked()
 {
-    using namespace std::chrono;
-
-    const int ARRAY_SIZE = 2000;
-
-    int myArray[ARRAY_SIZE];
-    int myArray2[ARRAY_SIZE];
-
-
-    // Массив заполняется
-    for(int i = 0; i < ARRAY_SIZE; i++){
-        myArray[i] = std::rand() % 100;
+    if(!fileIsActive){
+        ui->feedbackData->append("Нечего сортировать. Откройте файл\n");
+        return;
+    }
+    if(!ui->alteredFileData->text().isEmpty()){
+        ui->feedbackData->append("Данные уже отсортированы\n");
+        return;
     }
 
-    std::copy(myArray, myArray + ARRAY_SIZE, myArray2);
+    using namespace std::chrono;
+
+
+    int *myArray = new int[amountOfNums];
+    int *myArray2 = new int[amountOfNums];
+
+    myArray = activeRange;
+
+    std::copy(myArray, myArray + amountOfNums, myArray2);
+
 
     system_clock::time_point start = system_clock::now();
-    ShellSort(myArray, ARRAY_SIZE);
+    ShellSort(myArray, amountOfNums);
     system_clock::time_point end = system_clock::now();
-
     duration<double> elapsed = duration_cast<duration<double>>(end - start);
 
-
     start = system_clock::now();
-    GnomeSort(myArray, ARRAY_SIZE);
+    GnomeSort(myArray2, amountOfNums);
     end = system_clock::now();
-
     duration<double> elapsed2 = duration_cast<duration<double>>(end - start);
 
 
     ui->timeOfShell->setText(QString::fromStdString(std::to_string(elapsed.count())));
     ui->timeOfGnom->setText(QString::fromStdString(std::to_string(elapsed2.count())));
+    ui->alteredFileData->setText(QString::fromStdString(arrayToString(myArray, amountOfNums)));
 
+    delete[] myArray;
+    delete[] myArray2;
+    myArray = nullptr;
+    myArray2 = nullptr;
 }
 
-
+// Закрыть файл
 void MainWindow::on_optionClose_triggered()
 {
     if(fileIsActive){
@@ -112,6 +121,7 @@ void MainWindow::on_optionClose_triggered()
 
         ui->fileTitle->setText("");
         ui->fileData->setText("");
+        ui->alteredFileData->setText("");
         ui->feedbackData->append("Файл был успешно закрыт\n");
 
 

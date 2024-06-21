@@ -5,7 +5,7 @@
 
 
 #include <SFML/Graphics.hpp>
-#include "mainwindow.h""
+#include "mainwindow.h"
 
 #include <chrono>
 #include <algorithm>
@@ -16,7 +16,7 @@
 using namespace sf;
 
 
-const int ARRAY_SIZE = 800;
+const int ARRAY_SIZE = 50;
 
 
 struct row {
@@ -27,16 +27,17 @@ struct row {
 
 void ShellSort(int*, int);
 void GnomeSort(int*, int);
-void fillArray(row*, int);
-void shellSortStep(row*, int&, int&, int&);
-void gnomSortStep(row*, int&);
+void fillArray(row*, int*, int);
+void shellSortStep(row*, int, int&, int&, int&);
+void gnomSortStep(row*, int&, int);
 void exit(RenderWindow&, Event&);
-void toDraw(RenderWindow&, RectangleShape&, row*, int, int);
+void toDraw(RenderWindow&, RectangleShape&, row*, int, int, int, int);
 
-void mainPart(int); // Сама программа
+void mainPart(int, int*, int); // Сама программа
 
 
 int countIntegers(const std::string&);
 int* extractNumbers(const std::string&, int&);
+std::string arrayToString(int*, int);
 
 #endif // SERVICE_H

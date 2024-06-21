@@ -37,18 +37,17 @@ void GnomeSort(int* arr, int n)
     return;
 }
 
-void fillArray(row* user_array, int array_size) {
-    srand(time(0));
+void fillArray(row* user_array, int* array_from_file, int array_size) {
 
     for (int i = 0; i < array_size; i++) {
         user_array[i].x = i;
-        user_array[i].y = 1 + rand() % 550;
+        user_array[i].y = array_from_file[i];
     }
 }
 
-void shellSortStep(row* rows, int &step, int &i, int &j) {
+void shellSortStep(row* rows, int size, int &step, int &i, int &j) {
     if (step > 0) {
-        if (i < ARRAY_SIZE) {
+        if (i < size) {
             int tmp = rows[i].y;
             for (j = i; j >= step && tmp < rows[j - step].y; j -= step) {
                 rows[j].y = rows[j - step].y;
@@ -63,18 +62,21 @@ void shellSortStep(row* rows, int &step, int &i, int &j) {
     }
 }
 
-void gnomSortStep(row* rows, int& i) {
-    if (rows[i - 1].y <= rows[i].y) {
-        i++;
-    }
-    else {
-        std::swap(rows[i - 1].y, rows[i].y);
-        if (i > 1) {
-            i--;
+void gnomSortStep(row* rows, int& i, int size) {
+    if(i < size){
+        if (rows[i - 1].y <= rows[i].y) {
+            i++;
+        }
+        else {
+            std::swap(rows[i - 1].y, rows[i].y);
+            if (i > 1) {
+                i--;
+            }
         }
     }
 }
 
+// Для выключения окна SFML
 void exit(RenderWindow& window, Event& event) {
     while (window.pollEvent(event)) {
         if (event.type == Event::Closed)
@@ -82,34 +84,35 @@ void exit(RenderWindow& window, Event& event) {
     }
 }
 
-void toDraw(RenderWindow& window, RectangleShape& rectangle, row* rows, int i, int j = 0) {
+void toDraw(RenderWindow& window, RectangleShape& rectangle, row* rows, int array_size, int i, int j) {
 
-    window.clear(Color::Black);
+    window.clear(Color::White);
 
-    for (int k = 0; k < ARRAY_SIZE; k++) {
-        rectangle.setSize(Vector2f(2, rows[k].y));
-        rectangle.setPosition(Vector2f(k, 600));
+    for (int k = 0; k < array_size; k++) {
+        rectangle.setSize(Vector2f(800.0 / array_size, rows[k].y));
+        rectangle.setPosition(Vector2f((800.0 / array_size) * k, 600));
         rectangle.setRotation(180);
-        rectangle.setFillColor(Color(0, 70, 40));
-        if (k == i || k == j)
+        rectangle.setFillColor(Color(0, 0, 0));
+        if (k == i || k == j){
             rectangle.setFillColor(Color::Red);
+        }
         window.draw(rectangle);
     }
 
     window.display();
 }
 
-void mainPart(int mode) {
+void mainPart(int mode, int* arrayFromFile, int arraySize) {
 
     RenderWindow window(VideoMode(800, 600), "shellSort");
     RectangleShape rectangle;
     Event event;
 
-    row* rows = new row[ARRAY_SIZE];
+    row* rows = new row[arraySize];
 
-    fillArray(rows, ARRAY_SIZE);
+    fillArray(rows, arrayFromFile, arraySize);
 
-    int step = ARRAY_SIZE / 2;
+    int step = arraySize / 2;
     int j = 0;
     int i;
 
@@ -129,15 +132,15 @@ void mainPart(int mode) {
         // Шаг сортировки
         switch (mode) {
         case 1:
-            shellSortStep(rows, step, i, j);
+            shellSortStep(rows, arraySize, step, i, j);
             break;
         case 2:
-            gnomSortStep(rows, i);
+            gnomSortStep(rows, i, arraySize);
             break;
         }
 
         // Отрисовка
-        toDraw(window, rectangle, rows, i, j);
+        toDraw(window, rectangle, rows, arraySize, i, j);
     }
 
     delete[] rows;
@@ -190,4 +193,20 @@ int* extractNumbers(const std::string &input, int &count) {
     }
 
     return numbers;
+}
+
+std::string arrayToString(int* array, int size) {
+    if (array == nullptr || size <= 0) {
+        return "";
+    }
+
+    std::ostringstream oss;
+    for (int i = 0; i < size; ++i) {
+        oss << array[i];
+        if (i < size - 1) {
+            oss << " ";
+        }
+    }
+
+    return oss.str();
 }
