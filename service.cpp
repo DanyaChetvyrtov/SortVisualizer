@@ -38,7 +38,6 @@ void GnomeSort(int* arr, int n)
 }
 
 void fillArray(row* user_array, int* array_from_file, int array_size) {
-
     for (int i = 0; i < array_size; i++) {
         user_array[i].x = i;
         user_array[i].y = array_from_file[i];
@@ -163,11 +162,11 @@ int countIntegers(const std::string &input) {
     return count;
 }
 
-int* extractNumbers(const std::string &input, int &count) {
+int* extractNumbers(const std::string &input) {
     std::stringstream ss(input);
     std::string temp;
     int number;
-    count = 0;
+    int count = 0;
 
     // Сначала подсчитаем количество чисел
     std::stringstream ssCount(input);

@@ -4,6 +4,9 @@
 #include "ui_mainwindow.h"
 
 
+// Delete !!!
+#include <iostream>
+
 QFile activeFile;
 int *activeRange;
 int amountOfNums;
@@ -25,12 +28,22 @@ MainWindow::~MainWindow()
 // Визуализация Шелла
 void MainWindow::on_ShellSortButton_clicked()
 {
-   mainPart(1, activeRange, amountOfNums);
+    if(!fileIsActive){
+        ui->feedbackData->append("Нужно открыть файл.");
+        return;
+    }
+
+    mainPart(1, activeRange, amountOfNums);
 }
 
 // Визуализация Гнома
 void MainWindow::on_GnomSortButton_clicked()
 {
+    if(!fileIsActive){
+        ui->feedbackData->append("Нужно открыть файл.");
+        return;
+    }
+
     mainPart(2, activeRange, amountOfNums);
 }
 
@@ -39,7 +52,7 @@ void MainWindow::on_optionOpen_triggered()
 {
 
     if (fileIsActive){
-        ui->feedbackData->append("Невозможно открыть новый файл, пока не закрыт текущий.\n");
+        ui->feedbackData->append("Невозможно открыть новый файл, пока не закрыт текущий.");
         return;
     }
     else{
@@ -55,12 +68,13 @@ void MainWindow::on_optionOpen_triggered()
                 fileData += stream.readLine() + " ";
             }
 
-            ui->fileTitle->setText("Файл: " + fileName.split( "/" ).value( fileName.split( "/" ).length() - 1 ));
+            ui->fileTitle->setText("Файл: " + fileName.split( "/" ).value(fileName.split( "/" ).length() - 1 ));
             ui->fileData->setText(fileData);
-            ui->feedbackData->append("Файл был успешно открыт\n");
+            ui->feedbackData->append("Файл был успешно открыт.");
 
             amountOfNums = countIntegers(fileData.toStdString());
-            activeRange = extractNumbers(fileData.toStdString(), amountOfNums);
+            activeRange = new int[amountOfNums];
+            activeRange = extractNumbers(fileData.toStdString());
 
         }
         fileIsActive = true;
@@ -71,11 +85,11 @@ void MainWindow::on_optionOpen_triggered()
 void MainWindow::on_CompareButton_clicked()
 {
     if(!fileIsActive){
-        ui->feedbackData->append("Нечего сортировать. Откройте файл\n");
+        ui->feedbackData->append("Нечего сортировать. Откройте файл");
         return;
     }
     if(!ui->alteredFileData->text().isEmpty()){
-        ui->feedbackData->append("Данные уже отсортированы\n");
+        ui->feedbackData->append("Данные уже отсортированы");
         return;
     }
 
@@ -86,6 +100,7 @@ void MainWindow::on_CompareButton_clicked()
     int *myArray2 = new int[amountOfNums];
 
     myArray = activeRange;
+
 
     std::copy(myArray, myArray + amountOfNums, myArray2);
 
@@ -105,7 +120,17 @@ void MainWindow::on_CompareButton_clicked()
     ui->timeOfGnom->setText(QString::fromStdString(std::to_string(elapsed2.count())));
     ui->alteredFileData->setText(QString::fromStdString(arrayToString(myArray, amountOfNums)));
 
-    delete[] myArray;
+
+    // Создание нового файла
+    QFile sortedFile("C:\\Users\\123\\OneDrive\\Рабочий стол\\C++\\summer_practice\\TestAppSFML\\userFiles\\sorted_" + activeFile.fileName().split( "/" ).value(activeFile.fileName().split( "/" ).length() - 1 ));
+    sortedFile.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&sortedFile);
+    out << QString::fromStdString(arrayToString(myArray, amountOfNums));
+
+
+    ui->feedbackData->append("Сортировка была выполнена успешно.");
+
+
     delete[] myArray2;
     myArray = nullptr;
     myArray2 = nullptr;
@@ -121,13 +146,15 @@ void MainWindow::on_optionClose_triggered()
 
         ui->fileTitle->setText("");
         ui->fileData->setText("");
+        ui->timeOfShell->setText("");
+        ui->timeOfGnom->setText("");
         ui->alteredFileData->setText("");
-        ui->feedbackData->append("Файл был успешно закрыт\n");
+        ui->feedbackData->append("Файл был успешно закрыт");
 
 
         fileIsActive = false;
     }else{
-        ui->feedbackData->append("В настоящий момент нет подключённого файла\n");
+        ui->feedbackData->append("В настоящий момент нет подключённого файла");
     }
 }
 

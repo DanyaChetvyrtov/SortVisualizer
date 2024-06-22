@@ -37,7 +37,7 @@ void mainPart(int, int*, int); // Сама программа
 
 
 int countIntegers(const std::string&);
-int* extractNumbers(const std::string&, int&);
+int* extractNumbers(const std::string&);
 std::string arrayToString(int*, int);
 
 #endif // SERVICE_H
