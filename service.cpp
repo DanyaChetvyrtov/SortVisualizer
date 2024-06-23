@@ -37,14 +37,16 @@ void GnomeSort(int* arr, int n)
     return;
 }
 
-void fillArray(row* user_array, int* array_from_file, int array_size) {
+void fillArray(row* user_array, int* array_from_file, int array_size)
+{
     for (int i = 0; i < array_size; i++) {
         user_array[i].x = i;
         user_array[i].y = array_from_file[i];
     }
 }
 
-void shellSortStep(row* rows, int size, int &step, int &i, int &j) {
+void shellSortStep(row* rows, int size, int &step, int &i, int &j)
+{
     if (step > 0) {
         if (i < size) {
             int tmp = rows[i].y;
@@ -61,7 +63,8 @@ void shellSortStep(row* rows, int size, int &step, int &i, int &j) {
     }
 }
 
-void gnomSortStep(row* rows, int& i, int size) {
+void gnomSortStep(row* rows, int& i, int size)
+{
     if(i < size){
         if (rows[i - 1].y <= rows[i].y) {
             i++;
@@ -76,14 +79,16 @@ void gnomSortStep(row* rows, int& i, int size) {
 }
 
 // Для выключения окна SFML
-void exit(RenderWindow& window, Event& event) {
+void exit(RenderWindow& window, Event& event)
+{
     while (window.pollEvent(event)) {
         if (event.type == Event::Closed)
             window.close();
     }
 }
 
-void toDraw(RenderWindow& window, RectangleShape& rectangle, row* rows, int array_size, int i, int j) {
+void toDraw(RenderWindow& window, RectangleShape& rectangle, row* rows, int array_size, int i, int j)
+{
 
     window.clear(Color::White);
 
@@ -101,7 +106,8 @@ void toDraw(RenderWindow& window, RectangleShape& rectangle, row* rows, int arra
     window.display();
 }
 
-void mainPart(int mode, int* arrayFromFile, int arraySize) {
+void mainPart(int mode, int* arrayFromFile, int arraySize)
+{
 
     RenderWindow window(VideoMode(800, 600), "shellSort");
     RectangleShape rectangle;
@@ -146,7 +152,8 @@ void mainPart(int mode, int* arrayFromFile, int arraySize) {
     rows = nullptr;
 }
 
-int countIntegers(const std::string &input) {
+int countIntegers(const std::string &input)
+{
     std::stringstream ss(input);
     std::string temp;
     int count = 0;
@@ -162,21 +169,12 @@ int countIntegers(const std::string &input) {
     return count;
 }
 
-int* extractNumbers(const std::string &input) {
+int* extractNumbers(const std::string &input)
+{
     std::stringstream ss(input);
     std::string temp;
     int number;
-    int count = 0;
-
-    // Сначала подсчитаем количество чисел
-    std::stringstream ssCount(input);
-    while (ssCount >> temp) {
-        char* end;
-        std::strtol(temp.c_str(), &end, 10);
-        if (*end == '\0') {
-            ++count;
-        }
-    }
+    int count = countIntegers(input);
 
     // Выделим память под массив чисел
     int* numbers = new int[count];
@@ -194,7 +192,8 @@ int* extractNumbers(const std::string &input) {
     return numbers;
 }
 
-std::string arrayToString(int* array, int size) {
+std::string arrayToString(int* array, int size)
+{
     if (array == nullptr || size <= 0) {
         return "";
     }

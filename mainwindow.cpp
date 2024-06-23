@@ -4,9 +4,6 @@
 #include "ui_mainwindow.h"
 
 
-// Delete !!!
-#include <iostream>
-
 QFile activeFile;
 int *activeRange;
 int amountOfNums;
@@ -50,34 +47,54 @@ void MainWindow::on_GnomSortButton_clicked()
 // Открыть файл
 void MainWindow::on_optionOpen_triggered()
 {
-
     if (fileIsActive){
         ui->feedbackData->append("Невозможно открыть новый файл, пока не закрыт текущий.");
         return;
     }
-    else{
 
-        QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "C:\\Users\\123\\OneDrive\\Рабочий стол\\C++\\summer_practice\\TestAppSFML\\userFiles", "Text files (*.txt)");
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
+                                                    "C:\\Users\\123\\OneDrive\\Рабочий стол\\C++\\summer_practice\\TestAppSFML\\userFiles",
+                                                    "Text files (*.txt)");
+    activeFile.setFileName(fileName);
 
-        activeFile.setFileName(fileName);
+    QString fileData;
+    if(activeFile.open(QIODevice::ReadOnly)){
+        QTextStream stream(&activeFile);
 
-        if(activeFile.open(QIODevice::ReadOnly)){
-            QTextStream stream(&activeFile);
-            QString fileData;
-            while(stream.atEnd() == false){
-                fileData += stream.readLine() + " ";
-            }
-
-            ui->fileTitle->setText("Файл: " + fileName.split( "/" ).value(fileName.split( "/" ).length() - 1 ));
-            ui->fileData->setText(fileData);
-            ui->feedbackData->append("Файл был успешно открыт.");
-
-            amountOfNums = countIntegers(fileData.toStdString());
-            activeRange = new int[amountOfNums];
-            activeRange = extractNumbers(fileData.toStdString());
-
+        while(stream.atEnd() == false){
+            fileData += stream.readLine() + " ";
         }
-        fileIsActive = true;
+    }
+
+    ui->fileTitle->setText("Файл: " + fileName.split( "/" ).value(fileName.split( "/" ).length() - 1 ));
+    ui->fileData->setText(fileData);
+    ui->feedbackData->append("Файл был успешно открыт.");
+
+    amountOfNums = countIntegers(fileData.toStdString());
+    activeRange = new int[amountOfNums];
+    activeRange = extractNumbers(fileData.toStdString());
+    fileIsActive = true;
+}
+
+// Закрыть файл
+void MainWindow::on_optionClose_triggered()
+{
+    if(fileIsActive){
+
+        activeFile.close();
+        activeFile.setFileName("");
+
+        ui->fileTitle->setText("");
+        ui->fileData->setText("");
+        ui->timeOfShell->setText("");
+        ui->timeOfGnom->setText("");
+        ui->alteredFileData->setText("");
+        ui->feedbackData->append("Файл был успешно закрыт");
+
+        fileIsActive = false;
+
+    }else{
+        ui->feedbackData->append("В настоящий момент нет подключённого файла");
     }
 }
 
@@ -101,9 +118,7 @@ void MainWindow::on_CompareButton_clicked()
 
     myArray = activeRange;
 
-
     std::copy(myArray, myArray + amountOfNums, myArray2);
-
 
     system_clock::time_point start = system_clock::now();
     ShellSort(myArray, amountOfNums);
@@ -116,45 +131,22 @@ void MainWindow::on_CompareButton_clicked()
     duration<double> elapsed2 = duration_cast<duration<double>>(end - start);
 
 
-    ui->timeOfShell->setText(QString::fromStdString(std::to_string(elapsed.count())));
-    ui->timeOfGnom->setText(QString::fromStdString(std::to_string(elapsed2.count())));
-    ui->alteredFileData->setText(QString::fromStdString(arrayToString(myArray, amountOfNums)));
-
-
     // Создание нового файла
-    QFile sortedFile("C:\\Users\\123\\OneDrive\\Рабочий стол\\C++\\summer_practice\\TestAppSFML\\userFiles\\sorted_" + activeFile.fileName().split( "/" ).value(activeFile.fileName().split( "/" ).length() - 1 ));
+    QFile sortedFile("C:\\Users\\123\\OneDrive\\Рабочий стол\\C++\\summer_practice\\TestAppSFML\\userFiles\\sorted_" +
+                     activeFile.fileName().split( "/" ).value(activeFile.fileName().split( "/" ).length() - 1 ));
     sortedFile.open(QIODevice::WriteOnly | QIODevice::Text);
     QTextStream out(&sortedFile);
     out << QString::fromStdString(arrayToString(myArray, amountOfNums));
 
 
+    ui->timeOfShell->setText(QString::fromStdString(std::to_string(elapsed.count())));
+    ui->timeOfGnom->setText(QString::fromStdString(std::to_string(elapsed2.count())));
+    ui->alteredFileData->setText(QString::fromStdString(arrayToString(myArray, amountOfNums)));
     ui->feedbackData->append("Сортировка была выполнена успешно.");
 
 
     delete[] myArray2;
     myArray = nullptr;
     myArray2 = nullptr;
-}
-
-// Закрыть файл
-void MainWindow::on_optionClose_triggered()
-{
-    if(fileIsActive){
-
-        activeFile.close();
-        activeFile.setFileName("");
-
-        ui->fileTitle->setText("");
-        ui->fileData->setText("");
-        ui->timeOfShell->setText("");
-        ui->timeOfGnom->setText("");
-        ui->alteredFileData->setText("");
-        ui->feedbackData->append("Файл был успешно закрыт");
-
-
-        fileIsActive = false;
-    }else{
-        ui->feedbackData->append("В настоящий момент нет подключённого файла");
-    }
 }
 

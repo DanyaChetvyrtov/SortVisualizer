@@ -3,7 +3,6 @@
 #ifndef SERVICE_H
 #define SERVICE_H
 
-
 #include <SFML/Graphics.hpp>
 #include "mainwindow.h"
 
@@ -14,9 +13,6 @@
 #include <cstdlib>
 
 using namespace sf;
-
-
-const int ARRAY_SIZE = 50;
 
 
 struct row {
@@ -34,7 +30,6 @@ void exit(RenderWindow&, Event&);
 void toDraw(RenderWindow&, RectangleShape&, row*, int, int, int, int);
 
 void mainPart(int, int*, int); // Сама программа
-
 
 int countIntegers(const std::string&);
 int* extractNumbers(const std::string&);

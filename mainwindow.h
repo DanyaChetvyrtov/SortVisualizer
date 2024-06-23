@@ -34,10 +34,9 @@ private slots:
 
     void on_optionOpen_triggered();
 
+    void on_optionClose_triggered();
 
     void on_CompareButton_clicked();
-
-    void on_optionClose_triggered();
 
 private:
     Ui::MainWindow *ui;
