@@ -8,6 +8,7 @@ QFile activeFile;
 int *activeRange;
 int amountOfNums;
 bool fileIsActive = false;
+bool alreadySorted = false;
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -67,7 +68,6 @@ void MainWindow::on_optionOpen_triggered()
     }
 
     ui->fileTitle->setText("Файл: " + fileName.split( "/" ).value(fileName.split( "/" ).length() - 1 ));
-    ui->fileData->setText(fileData);
     ui->feedbackData->append("Файл был успешно открыт.");
 
     amountOfNums = countIntegers(fileData.toStdString());
@@ -85,13 +85,12 @@ void MainWindow::on_optionClose_triggered()
         activeFile.setFileName("");
 
         ui->fileTitle->setText("");
-        ui->fileData->setText("");
         ui->timeOfShell->setText("");
         ui->timeOfGnom->setText("");
-        ui->alteredFileData->setText("");
         ui->feedbackData->append("Файл был успешно закрыт");
 
         fileIsActive = false;
+        alreadySorted = false;
 
     }else{
         ui->feedbackData->append("В настоящий момент нет подключённого файла");
@@ -105,7 +104,7 @@ void MainWindow::on_CompareButton_clicked()
         ui->feedbackData->append("Нечего сортировать. Откройте файл");
         return;
     }
-    if(!ui->alteredFileData->text().isEmpty()){
+    if(alreadySorted){
         ui->feedbackData->append("Данные уже отсортированы");
         return;
     }
@@ -141,12 +140,52 @@ void MainWindow::on_CompareButton_clicked()
 
     ui->timeOfShell->setText(QString::fromStdString(std::to_string(elapsed.count())));
     ui->timeOfGnom->setText(QString::fromStdString(std::to_string(elapsed2.count())));
-    ui->alteredFileData->setText(QString::fromStdString(arrayToString(myArray, amountOfNums)));
     ui->feedbackData->append("Сортировка была выполнена успешно.");
+    alreadySorted = true;
 
 
     delete[] myArray2;
     myArray = nullptr;
     myArray2 = nullptr;
+}
+
+
+void MainWindow::on_ShellSortButtonInfo_clicked()
+{
+    QFile infoShellFile("C:\\Users\\123\\OneDrive\\Рабочий стол\\C++\\summer_practice\\TestAppSFML\\theory\\ShellSort.txt");
+
+    QString fileData;
+    if(infoShellFile.open(QIODevice::ReadOnly)){
+        QTextStream stream(&infoShellFile);
+
+        while(stream.atEnd() == false){
+            fileData += stream.readLine() + " ";
+        }
+    }
+
+    ui->infoData->setText(fileData);
+
+    infoShellFile.close();
+    infoShellFile.setFileName("");
+}
+
+
+void MainWindow::on_GnomSortButtonInfo_clicked()
+{
+    QFile infoGnomeFile("C:\\Users\\123\\OneDrive\\Рабочий стол\\C++\\summer_practice\\TestAppSFML\\theory\\GnomeSort.txt");
+
+    QString fileData;
+    if(infoGnomeFile.open(QIODevice::ReadOnly)){
+        QTextStream stream(&infoGnomeFile);
+
+        while(stream.atEnd() == false){
+            fileData += stream.readLine() + " ";
+        }
+    }
+
+    ui->infoData->setText(fileData);
+
+    infoGnomeFile.close();
+    infoGnomeFile.setFileName("");
 }
 

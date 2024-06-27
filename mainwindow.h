@@ -3,13 +3,14 @@
 
 #include <QMainWindow>
 
+#include <QApplication>
 #include <QFileDialog>
+#include <QTextStream>
+#include <QString>
+#include <QDebug>
+#include <QIcon>
 #include <QFile>
 #include <QDir>
-#include <QDebug>
-#include <QString>
-#include <QTextStream>
-
 
 
 
@@ -37,6 +38,10 @@ private slots:
     void on_optionClose_triggered();
 
     void on_CompareButton_clicked();
+
+    void on_ShellSortButtonInfo_clicked();
+
+    void on_GnomSortButtonInfo_clicked();
 
 private:
     Ui::MainWindow *ui;

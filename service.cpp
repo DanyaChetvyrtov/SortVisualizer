@@ -3,10 +3,10 @@
 
 void ShellSort(int* mass, int n)
 {
-    int i, j, step;
+    int j;
     int tmp;
-    for (step = n / 2; step > 0; step /= 2)
-        for (i = step; i < n; i++)
+    for (int step = n / 2; step > 0; step /= 2)
+        for (int i = step; i < n; i++)
         {
             tmp = mass[i];
             for (j = i; j >= step; j -= step)
@@ -108,8 +108,17 @@ void toDraw(RenderWindow& window, RectangleShape& rectangle, row* rows, int arra
 
 void mainPart(int mode, int* arrayFromFile, int arraySize)
 {
+    std::string sortTitle;
+    switch(mode){
+    case 1:
+        sortTitle = "ShellSort";
+        break;
+    case 2:
+        sortTitle = "GnomeSort";
+        break;
+    }
 
-    RenderWindow window(VideoMode(800, 600), "shellSort");
+    RenderWindow window(VideoMode(800, 600), sortTitle);
     RectangleShape rectangle;
     Event event;
 
